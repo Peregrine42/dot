@@ -10,16 +10,15 @@ class DashboardsController < ApplicationController
         .map { |l| NormalizedNode.new(l) }
       }
     }.flatten
-    filter_query.each do |f|
-    end
     unless filter_query.empty?
-      nodes = nodes.select { |n|
-      puts n.tags.values.inspect
-      puts filter_query.inspect
-      n.tags.values
-        .any? { |t| filter_query.include? t }
+      filtered_nodes = nodes.select { |n|
+        filter_query.all? { |q|
+          n.tags.values.include? q
+        }
       }
+    else
+      filtered_nodes = nodes
     end
-    @dashboard = Dashboard.new(nodes)
+    @dashboard = Dashboard.new(filtered_nodes)
   end
 end

@@ -7,6 +7,7 @@ include FactoryGirl::Syntax::Methods
 DatabaseCleaner.strategy = :truncation
 DatabaseCleaner.clean
 
+alcatel_tag = create(:tag, name: "alcatel")
 nodes_on_router_1 = 8
 router_1_nodes = create_list(:node, nodes_on_router_1)
 router_1_tag = create(:tag, name: "72xx108")
@@ -20,9 +21,8 @@ router_1_nodes
     create(:link, tag: tag, node: node, position: 2)
   }
 router_1_nodes.each { |node|
-  manufacturer_tag = create(:tag, name: "alcatel")
   create(:link,
-    tag: manufacturer_tag, node: node, position: 3
+    tag: alcatel_tag, node: node, position: 3
   )
 
   model_tag = create(:tag, name: "7750")
@@ -42,9 +42,8 @@ router_2_nodes
     create(:link, tag: tag, node: node, position: 2)
   }
 router_2_nodes.each { |node|
-  manufacturer_tag = create(:tag, name: "alcatel")
   create(:link,
-    tag: manufacturer_tag, node: node, position: 3
+    tag: alcatel_tag, node: node, position: 3
   )
 
   model_tag = create(:tag, name: "88900")
@@ -70,9 +69,8 @@ router_3_nodes
     create(:link, tag: tag, node: node, position: 2)
   }
 router_3_nodes.each { |node|
-  manufacturer_tag = create(:tag, name: "alcatel")
   create(:link,
-    tag: manufacturer_tag, node: node, position: 3
+    tag:alcatel_tag, node: node, position: 3
   )
 
   model_tag = create(:tag, name: "x1400")
@@ -91,17 +89,39 @@ router_4_nodes
     tag = create(:tag, name: name_tag)
     create(:link, tag: tag, node: node, position: 2)
   }
+
+cisco_tag = create(:tag, name: "cisco")
 router_4_nodes.each { |node|
-  manufacturer_tag = create(:tag, name: "cisco")
   create(
-    :link, tag: manufacturer_tag, node: node, position: 3
+    :link, tag: cisco_tag, node: node, position: 3
   )
 
   model_tag = create(:tag, name: "9292")
   create(:link, tag: model_tag, node: node, position: 4)
 }
 
-nodes_in_inet_network = router_3_nodes + router_4_nodes
+nodes_on_router_5 = 5
+router_5_nodes = create_list(:node, nodes_on_router_5)
+router_5_tag = create(:tag, name: "56li22")
+router_5_nodes.each { |n|
+  create(:link, tag: router_5_tag, node: n, position: 1)
+}
+router_5_nodes
+  .zip(nodes_on_router_5.times.map { |i| "port_#{i}" })
+  .each { |node, name_tag|
+    tag = create(:tag, name: name_tag)
+    create(:link, tag: tag, node: node, position: 2)
+  }
+router_5_nodes.each { |node|
+  create(
+    :link, tag: cisco_tag, node: node, position: 3
+  )
+
+  model_tag = create(:tag, name: "9292")
+  create(:link, tag: model_tag, node: node, position: 4)
+}
+
+nodes_in_inet_network = router_3_nodes + router_4_nodes + router_5_nodes
 inet_tag = create(:tag, name: "inet_network")
 nodes_in_inet_network.each { |node|
   create(:link, tag: inet_tag, node: node, position: 5)
