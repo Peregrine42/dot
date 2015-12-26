@@ -12,15 +12,21 @@ end
 
 Given "there are links between those nodes and tags" do
   @foo_nodes.each do |node|
-    create(:link, node_id: node.id, tag_id: @foo_tag.id)
+    create(:link,
+      node_id: node.id, tag_id: @foo_tag.id, position: 1
+    )
   end
-  
+
   @bar_nodes.each do |node|
-    create(:link, node_id: node.id, tag_id: @bar_tag.id)
+    create(:link,
+      node_id: node.id, tag_id: @bar_tag.id, position: 1
+    )
   end
-  
+
   (@bar_nodes + @foo_nodes).each do |node|
-    create(:link, node_id: node.id, tag_id: @ad_tag.id)
+    create(:link,
+      node_id: node.id, tag_id: @ad_tag.id, position: 2
+    )
   end
 end
 
@@ -29,20 +35,21 @@ When "I request a set of tags from the api" do
 end
 
 Then "I recieve the nodes as a list, grouped by tag" do
-  prepared_foo_nodes = @foo_nodes.map { |n| 
-    { "id" => n.id, 
-      "name" => n.name, 
-      "tags" => [@foo_tag.name] + ["adastral_park"] } 
+  prepared_foo_nodes = @foo_nodes.map { |n|
+    { "id" => n.id,
+      "tags" => [@foo_tag.name] + ["adastral_park"] }
   }
-  prepared_bar_nodes = @bar_nodes.map { |n| 
-    { "id" => n.id, 
-      "name" => n.name, 
-      "tags" => [@bar_tag.name] + ["adastral_park"] } 
+  prepared_bar_nodes = @bar_nodes.map { |n|
+    { "id" => n.id,
+      "tags" => [@bar_tag.name] + ["adastral_park"] }
   }
-  prepared_nodes = (prepared_foo_nodes + prepared_bar_nodes)
+  prepared_nodes =
+    (prepared_foo_nodes + prepared_bar_nodes)
   actual_json = JSON.parse(page.body)
-  expected = prepared_nodes.map { |n| n["name"] }.sort
-  actual = actual_json["nodes"].map { |n| n["name"] }.sort
-  
+  expected =
+    prepared_nodes.map { |n| n["id"] }.sort
+  actual =
+    actual_json["nodes"].map { |n| n["id"] }.sort
+
   expect(actual).to eq expected
 end
