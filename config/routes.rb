@@ -1,3 +1,3 @@
 Rails.application.routes.draw do
-  resources :dashboards
+  get "dashboards/*query", to: "dashboards#show"
 end
