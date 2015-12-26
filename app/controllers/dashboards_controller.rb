@@ -12,12 +12,14 @@ class DashboardsController < ApplicationController
     }.flatten
     filter_query.each do |f|
     end
-    nodes = nodes.select { |n|
+    unless filter_query.empty?
+      nodes = nodes.select { |n|
       puts n.tags.values.inspect
       puts filter_query.inspect
       n.tags.values
         .any? { |t| filter_query.include? t }
-    }
+      }
+    end
     @dashboard = Dashboard.new(nodes)
   end
 end
