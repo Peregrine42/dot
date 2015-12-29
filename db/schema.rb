@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20151226122028) do
   create_table "nodes", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name"
   end
 
   create_table "tags", force: :cascade do |t|
